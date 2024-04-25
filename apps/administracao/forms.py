@@ -2,7 +2,7 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import Usuario
 from django import forms
 
-class FormHomepage(forms.Form):
+class FormMainPage(forms.Form):
     email = forms.EmailField(label=False)
 
 

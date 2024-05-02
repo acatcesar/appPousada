@@ -6,7 +6,7 @@ class FormMainPage(forms.Form):
     email = forms.EmailField(label=False)
 
 
-class CriarContaForm(UserCreationForm):
+class CreateAccountForm(UserCreationForm):
     email = forms.EmailField()
 
     class Meta:

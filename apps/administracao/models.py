@@ -20,21 +20,23 @@ class Cupons(models.Model):
 
     def __str__(self):
         return self.codigo
+    
+class Usuario(AbstractUser):
+    cupons_utilizados = models.ManyToManyField(Cupons)
 
 class Reserva(models.Model):
     valor = models.DecimalField
     dataEntrada= models.DateTimeField
     dataSaida = models.DateTimeField
     qntDias = models.IntegerField(default=0)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, null=True, blank=True)
+    user = models.ForeignKey(Usuario, on_delete=models.PROTECT, null=True, blank=True)
     apartamento = models.ForeignKey(Apartamento, on_delete=models.PROTECT, null=True, blank=True, db_constraint=False)
     data_criacao = models.DateTimeField(default=timezone.now)
     cupons = models.ForeignKey(Cupons, on_delete=models.PROTECT, null=True, blank=True, db_constraint=False)
 
 
 
-class Usuario(AbstractUser):
-    cupons_utilizados = models.ManyToManyField(Cupons)
+
 
 
 

@@ -27,7 +27,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'apps.administracao'
+    'django_extensions',
+    'apps.administracao',
+
 ]
 
 MIDDLEWARE = [
@@ -66,8 +68,12 @@ WSGI_APPLICATION = 'appPousada.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'appPousada',
+        'USER': 'postgres',
+        'PASSWORD': 'auau102030',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 

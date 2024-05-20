@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, reverse
 from django.db import models
-from .models import Reserva, Usuario
+from .models import Reserva, Usuario, Apartamento
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import  FormMainPage
 from django.views.generic import TemplateView, ListView, DetailView, FormView, UpdateView
@@ -37,8 +37,12 @@ class MainPage(FormView):
     #         return reverse('administracao:createaccount')
 
 
+
 class Homehospedagem(LoginRequiredMixin, ListView):
     model = Reserva
+
+class Apartamento(ListView):
+    model = Apartamento
 
 
 class CreateAccount(FormView):
@@ -48,3 +52,5 @@ class CreateAccount(FormView):
     def form_valid(self, form):
         form.save()
         return super().form_valid(form)
+    def get_success_url(self):
+        return reverse('administracao:login')

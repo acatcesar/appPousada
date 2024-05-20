@@ -1,0 +1,84 @@
+/* custom_admin.css */
+
+/* Estilo para o cabeçalho */
+#header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+}
+
+/* Estilo para o menu lateral */
+#nav {
+    background-color: #444;
+    color: #fff;
+}
+
+/* Estilo para os links do menu lateral */
+#nav a {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px;
+    display: block;
+}
+
+/* Estilo para os itens ativos no menu lateral */
+#nav a.active {
+    background-color: #555;
+}
+
+/* Estilo para o conteúdo principal */
+#content {
+    padding: 20px;
+}
+
+/* Estilo para as tabelas */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th, table td {
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+/* Estilo para os botões */
+input[type="submit"], input[type="button"], input[type="reset"], button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+/* Estilo para o hover dos botões */
+input[type="submit"]:hover, input[type="button"]:hover, input[type="reset"]:hover, button:hover {
+    background-color: #0056b3;
+}
+
+/* Estilo para as mensagens de sucesso */
+.success {
+    background-color: #28a745;
+    color: #fff;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+/* Estilo para as mensagens de erro */
+.error {
+    background-color: #dc3545;
+    color: #fff;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+/* cssadmin.css */
+.custom-admin #header {
+    background-color: #333; /* Cor desejada para o cabeçalho */
+}
+
+.custom-admin #nav {
+    background-color: #555; /* Cor desejada para a barra lateral */
+}

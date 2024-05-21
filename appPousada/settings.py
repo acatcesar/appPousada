@@ -66,17 +66,22 @@ WSGI_APPLICATION = 'appPousada.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'appPousada',
+#         'USER': 'postgres',
+#         'PASSWORD': 'auau102030',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'appPousada',
-        'USER': 'postgres',
-        'PASSWORD': 'auau102030',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 
 # Password validation
@@ -126,7 +131,7 @@ STATIC_ROOT = os.path.join('static')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-LOGIN_REDIRECT_URL = 'home'
+# LOGIN_REDIRECT_URL = 'administracao:reserva'
 
 LOGIN_URL = 'administracao:login'
 

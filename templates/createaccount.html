@@ -1,1 +1,12 @@
+    <header>   <div class="z-10 h-full py-32 md:py-0 text-gray-100 text-center flex items-center flex-col">
+            <form method="post">
+                {% csrf_token %}
+                <fieldset class="form-group">
+                    <legend class="border-bottom mb-4">Crie uma conta para continuar</legend>
                     {{ form }}
+                </fieldset>
+                <button class="bg-red-600 py-1 px-3 text-white w-full md:text-lg rounded-md" type="submit">Criar Conta</button>
+            </form>
+
+        </div>
+    </header>

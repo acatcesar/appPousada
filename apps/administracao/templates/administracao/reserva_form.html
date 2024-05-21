@@ -1,4 +1,6 @@
+
 {% load static %}
+
 <!-- /*
 * Bootstrap 5
 * Template Name: Furni
@@ -57,8 +59,12 @@
 					</ul>
 
 					<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-						<li><a class="nav-link" href="#"><img src="images/user.svg"></a></li>
-						<li><a class="nav-link" href="cart.html"><img src="images/cart.svg"></a></li>
+                        {% if user.is_authenticated %}
+						<li><a class="nav-link" href="administracao:editaccount"><img src="{% static 'images/user.svg' %}"></a></li>
+                        {% endif %}
+                        {% if user.is_authenticated %}
+						<li><a class="nav-link" href="{% url 'administracao:logout' %}"><img src="{% static 'images/cart.svg' %}"></a></li>
+                        {% endif %}
 					</ul>
 				</div>
 			</div>
@@ -84,27 +90,15 @@
 		<!-- End Hero Section -->
 
 
-    <form  method="post">
-        {% csrf_token %}
-        <label for="dataEntrada">Data de Entrada:</label>
-        <input type="date" id="dataEntrada" name="dataEntrada" required>
+<form method="POST" class="custom-form">
+    {% csrf_token %}
 
-        <label for="dataSaida">Data de Saída:</label>
-        <input type="date" id="dataSaida" name="dataSaida" required>
+    {{ form.as_p }}
 
-        <label for="apartamento">Selecione o Apartamento:</label>
-        <select id="apartamento" name="apartamento" required>
-            {% for apartamento in apartamentos %}
-                <option value="{{ apartamento.id }}">{{ apartamento.nome }}</option>
-            {% endfor %}
-        </select>
-
-        <!-- Adicione aqui a lógica para selecionar e aplicar cupons -->
-
-        <button type="submit">Reservar</button>
-    </form>
+    <button type="submit" class="btn btn-info">Realizar Pagamento!</button>
 
 
+</form>
 
 		<!-- Start Footer Section -->
 		<footer class="footer-section">
@@ -212,9 +206,10 @@
 		<!-- End Footer Section -->
 
 
-		<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-		<script src="{% static 'js/tiny-slider.js'%}"></script>
-		<script src="{% static 'js/custom.js'%}"></script>
+
+		<script src="js/bootstrap.bundle.min.js"></script>
+		<script src="js/tiny-slider.js"></script>
+		<script src="js/custom.js"></script>
 	</body>
 
 </html>

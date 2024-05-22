@@ -51,25 +51,34 @@
 						<li class="nav-item ">
 							<a class="nav-link" href="index.html">Home</a>
 						</li>
-						<li class="active"><a class="nav-link" href="shop.html">Shop</a></li>
-						<li><a class="nav-link" href="about.html">About us</a></li>
+						<li class="active"><a class="nav-link" href="shop.html">Reservas</a></li>
+						<li><a class="nav-link" href="about.html">Sobre nós</a></li>
 						<li><a class="nav-link" href="services.html">Services</a></li>
 						<li><a class="nav-link" href="blog.html">Blog</a></li>
 						<li><a class="nav-link" href="contact.html">Contact us</a></li>
 					</ul>
 
 					<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-                        {% if user.is_authenticated %}
+
 						<li><a class="nav-link" href="administracao:editaccount"><img src="{% static 'images/user.svg' %}"></a></li>
-                        {% endif %}
-                        {% if user.is_authenticated %}
-						<li><a class="nav-link" href="{% url 'administracao:logout' %}"><img src="{% static 'images/cart.svg' %}"></a></li>
-                        {% endif %}
+
+
+
+<form  method="post" action="{% url 'administracao:logout' %}" >
+    {% csrf_token %}
+    <button type="submit" class="bg-red-600 text-white py-1 px-3 rounded-md">
+        Sair
+    </button>
+</form>
+
+
+
 					</ul>
 				</div>
 			</div>
 
 		</nav>
+
 		<!-- End Header/Navigation -->
 
 		<!-- Start Hero Section -->
@@ -93,11 +102,19 @@
 <form method="POST" class="custom-form">
     {% csrf_token %}
 
-    {{ form.as_p }}
+    <label>Apartamento:</label>
+    {{ form.apartamento }}
 
-    <button type="submit" class="btn btn-info">Realizar Pagamento!</button>
+    <label>Data de entrada:</label>
+	<input type="date" name="dataEntrada" value="{{ form.dataEntrada }}
 
+    <label>Data de Saída:</label>
+    <input type="date" id="dataSaida" name="dataSaida" value="{{ form.dataSaida }}
 
+    <label>Cupom:</label>
+    <input type="text" id="cupons" name="cupons">
+
+    <button type="submit" class="btn btn-info">Confirmar</button>
 </form>
 
 		<!-- Start Footer Section -->

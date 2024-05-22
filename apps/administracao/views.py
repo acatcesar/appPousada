@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, reverse
 from django.db import models
 from .models import Reserva, Usuario, Apartamento
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import  FormMainPage
+from .forms import FormMainPage, ReservaFormCreate
 from django.views.generic import TemplateView, ListView, DetailView, FormView, UpdateView, CreateView
 from .forms import CreateAccountForm
 
@@ -53,14 +53,17 @@ class Homehospedagem(LoginRequiredMixin, ListView):
 
 class HomehospedagemNovo(LoginRequiredMixin, CreateView):
     model = Reserva
-    fields = ['dataEntrada', 'dataSaida', 'qntDias', 'apartamento', 'cupons']  # Substitua pelos nomes dos campos que deseja incluir no formulário
+    form_class = ReservaFormCreate
+
+    def get_form_kwargs(self):
+        kwargs = super(HomehospedagemNovo, self).get_form_kwargs()
+        kwargs.update({'user': self.request.user})
+        return kwargs
 
 
 
-    # def get_form_kwargs(self):
-    #     kwargs = super(HomehospedagemNovo, self).get_form_kwargs()
-    #     kwargs.update({'user': self.request.user})
-    #     return kwargs
+
+
 
     # def get_form_kwargs(self):
     #     kwargs = super(Homehospedagem, self).get_form_kwargs()

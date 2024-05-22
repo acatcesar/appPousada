@@ -131,9 +131,9 @@ STATIC_ROOT = os.path.join('static')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-# LOGIN_REDIRECT_URL = 'administracao:reserva'
+LOGIN_REDIRECT_URL = 'administracao:create_reserva'
 
 LOGIN_URL = 'administracao:login'
 
-LOGIN_REDIRECT_URL = 'administracao:homehospedagem'
+
 

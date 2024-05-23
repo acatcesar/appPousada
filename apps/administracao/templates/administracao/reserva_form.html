@@ -40,7 +40,7 @@
 		<nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="Furni navigation bar">
 
 			<div class="container">
-				<a class="navbar-brand" href="index.html">Furni<span>.</span></a>
+				<a class="navbar-brand" href="index.html">Pousada Campeche<span>.</span></a>
 
 				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni" aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
@@ -87,7 +87,7 @@
 					<div class="row justify-content-between">
 						<div class="col-lg-5">
 							<div class="intro-excerpt">
-								<h1>Shop</h1>
+								<h1>Reserva</h1>
 							</div>
 						</div>
 						<div class="col-lg-7">
@@ -102,19 +102,20 @@
 <form method="POST" class="custom-form">
     {% csrf_token %}
 
-    <label>Apartamento:</label>
-    {{ form.apartamento }}
+	<label for="apartamento">Apartamento:</label>
+ 			{{ form.apartamento }}>
+		<label >Valor Diária:</label>
+    	{{ form.valor }}
 
-    <label>Data de entrada:</label>
-	<input type="date" name="dataEntrada" value="{{ form.dataEntrada }}
 
-    <label>Data de Saída:</label>
-    <input type="date" id="dataSaida" name="dataSaida" value="{{ form.dataSaida }}
+    <label for="dataEntrada">Data de entrada:</label>
+        <input type="date" id="dataEntrada" name="dataEntrada" value="{{ form.dataEntrada }}" >
+    <label for="dataSaida">Data de Saída:</label>
+        <input type="date" id="dataSaida" name="dataSaida" value="{{ form.dataSaida }}">
+    <label for="codigo_cupom">Código do Cupom:</label>
+		<input type="text" id="codigo_cupom" name="codigo_cupom">
+    <button type="submit" class="btn btn-info">Realizar Pagamento!</button>
 
-    <label>Cupom:</label>
-    <input type="text" id="cupons" name="cupons">
-
-    <button type="submit" class="btn btn-info">Confirmar</button>
 </form>
 
 		<!-- Start Footer Section -->
@@ -223,6 +224,25 @@
 		<!-- End Footer Section -->
 
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+<script>
+$(document).ready(function () {
+    $('#id_apartamento').change(function () {
+        var apartamentoId = $(this).val();
+        $.ajax({
+            url: "{% url 'administracao:obter_apartamento_valor' %}",
+            data: {apartamento_id: apartamentoId},
+            dataType: 'json',
+            success: function (data) {
+                $('#id_valor').val(data.valor);
+            }
+        });
+    });
+});
+</script>
+
 
 		<script src="js/bootstrap.bundle.min.js"></script>
 		<script src="js/tiny-slider.js"></script>
@@ -230,3 +250,5 @@
 	</body>
 
 </html>
+
+

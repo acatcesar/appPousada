@@ -1,5 +1,8 @@
 from django.urls import path, reverse_lazy
-from .views import MainPage, Homehospedagem, CreateAccount, Apartamento, Editaccount, HomehospedagemNovo
+
+from . import views
+from .views import MainPage, Homehospedagem, CreateAccount, Editaccount, HomehospedagemNovo, \
+    obter_apartamento_valor, Apartamentolista
 from django.contrib.auth import views as auth_view
 from django.urls import path
 
@@ -9,12 +12,14 @@ urlpatterns = [
     path('', MainPage.as_view(), name='home'),
     path('reserva/', Homehospedagem.as_view(), name='reserva'),
     path('novo/', HomehospedagemNovo.as_view(), name='create_reserva'),
-    path('apartamento/', Apartamento.as_view(), name='apartamento'),
     path('login/', auth_view.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', auth_view.LogoutView.as_view(template_name='logout.html'), name='logout'),
     path('createaccount/', CreateAccount.as_view(), name='createaccount'),
     path('editaccount/<int:pk>', Editaccount.as_view(), name='editaccount'),
     path('homehospedagem', Homehospedagem.as_view(), name='homehospedagem'),
+    path('obter_apartamento_valor/', obter_apartamento_valor, name='obter_apartamento_valor'),
+    path('apartamento/', Apartamentolista.as_view(), name='apartamento'),
+
 
 ]
 

@@ -1,10 +1,14 @@
 from django.shortcuts import render, redirect, reverse
 from django.db import models
-from .models import Reserva, Usuario, Apartamento
+from .models import Reserva, Usuario,  Cupons
+from .models import Apartamento
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import FormMainPage, ReservaFormCreate
 from django.views.generic import TemplateView, ListView, DetailView, FormView, UpdateView, CreateView
 from .forms import CreateAccountForm
+from django.http import request, JsonResponse
+from django.core.exceptions import ObjectDoesNotExist
+from django.utils import timezone
 
 # class MainPage(LoginRequiredMixin, ListView):
 
@@ -15,6 +19,7 @@ from .forms import CreateAccountForm
 #         local_list = Reserva.objects.all()
 
 #         return render(request, "homehospedagem_form.html")
+
 
 
 class MainPage(FormView):
@@ -60,25 +65,34 @@ class HomehospedagemNovo(LoginRequiredMixin, CreateView):
         kwargs.update({'user': self.request.user})
         return kwargs
 
+    def form_valid(self, form):
+        reserva_obj = form.save(commit=False)
+        reserva_obj.user = self.request.user
+
+        if reserva_obj.dataEntrada and reserva_obj.dataSaida:
+            datas_entre = []
+            current_date = reserva_obj.dataEntrada
+            while current_date <= reserva_obj.dataSaida:
+                datas_entre.append(current_date.date())
+                current_date += timezone.timedelta(days=1)
+            reserva_obj.qntDatas = len(datas_entre)
+            reserva_obj.qntDias = ', '.join([str(date) for date in datas_entre])
+        reserva_obj.valor *= reserva_obj.qntDatas
 
 
+        codigo_cupom = self.request.POST.get('codigo_cupom')
+        if codigo_cupom:
+            try:
+                cupom = Cupons.objects.get(codigo=codigo_cupom, utilizado=False)
+                reserva_obj.valor -= cupom.desconto
+                cupom.utilizado = True
+                cupom.save()
+            except Cupons.DoesNotExist:
+                pass
 
-
-
-    # def get_form_kwargs(self):
-    #     kwargs = super(Homehospedagem, self).get_form_kwargs()
-    #     kwargs.update({'user': self.request.user})
-    #     return kwargs
-
-    # def form_valid (self, form):
-    #     apropriacao_obj = form.save (commit=False)
-    #
-    #     return self.form_invalid(form)
-
-
-
-class Apartamento(ListView):
-    model = Apartamento
+        super().form_valid(form)
+        reserva_obj.save()
+        return super().form_valid(form)
 
 
 class CreateAccount(FormView):
@@ -98,3 +112,15 @@ class Editaccount(LoginRequiredMixin, UpdateView):
 
     # def get_success_url(self):
     #     return reverse('administracao:reserva')
+
+
+def obter_apartamento_valor(request):
+    apartamento_id = request.GET.get('apartamento_id')
+    apartamento = Apartamento.objects.get(id=apartamento_id)
+    valor = apartamento.valor
+
+    return JsonResponse({'valor': valor})
+
+
+class Apartamentolista(ListView):
+    model = Apartamento

@@ -21,5 +21,7 @@ urlpatterns = [
     path('apartamento/', Apartamentolista.as_view(), name='apartamento'),
 
 
+
+
 ]
 

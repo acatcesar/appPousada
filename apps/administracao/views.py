@@ -9,7 +9,7 @@ from .forms import CreateAccountForm
 from django.http import request, JsonResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
-
+from datetime import datetime, timedelta
 # class MainPage(LoginRequiredMixin, ListView):
 
 #     model = Reserva
@@ -69,6 +69,7 @@ class HomehospedagemNovo(LoginRequiredMixin, CreateView):
         reserva_obj = form.save(commit=False)
         reserva_obj.user = self.request.user
 
+
         if reserva_obj.dataEntrada and reserva_obj.dataSaida:
             datas_entre = []
             current_date = reserva_obj.dataEntrada
@@ -87,6 +88,7 @@ class HomehospedagemNovo(LoginRequiredMixin, CreateView):
                 reserva_obj.valor -= cupom.desconto
                 cupom.utilizado = True
                 cupom.save()
+                reserva_obj.cupons = cupom
             except Cupons.DoesNotExist:
                 pass
 
@@ -118,9 +120,28 @@ def obter_apartamento_valor(request):
     apartamento_id = request.GET.get('apartamento_id')
     apartamento = Apartamento.objects.get(id=apartamento_id)
     valor = apartamento.valor
+    datas_ocupadas = apartamento.qntDias  # Obtém as datas ocupadas do apartamento
 
-    return JsonResponse({'valor': valor})
+    # Converte as datas ocupadas de strings para objetos datetime
+    datas_ocupadas_reais = []
+    if datas_ocupadas:
+        for data_str in datas_ocupadas.split(', '):
+            data = datetime.strptime(data_str, '%Y-%m-%d').date()
+            datas_ocupadas_reais.append(data)
 
+    # Calcula as datas disponíveis subtraindo as datas ocupadas do intervalo total
+    intervalo_total = (datetime.now().date() + timedelta(days=365)) - datetime.now().date()  # Intervalo de um ano
+    datas_disponiveis = []
+    if datas_ocupadas_reais:
+        data_atual = datetime.now().date()
+        while data_atual < datetime.now().date() + intervalo_total:
+            if data_atual not in datas_ocupadas_reais:
+                datas_disponiveis.append(data_atual)
+            data_atual += timedelta(days=1)
+    else:
+        datas_disponiveis = [datetime.now().date() + timedelta(days=i) for i in range(intervalo_total.days)]
+
+    return JsonResponse({'valor': valor, 'datas_disponiveis': datas_disponiveis})
 
 class Apartamentolista(ListView):
     model = Apartamento

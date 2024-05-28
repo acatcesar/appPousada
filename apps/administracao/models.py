@@ -1,6 +1,9 @@
 import json
 import random
 import string
+from datetime import datetime
+
+from datetime import timedelta, date
 
 from django.db import models
 from django.utils import timezone
@@ -14,6 +17,10 @@ class Apartamento(models.Model):
     valor = models.DecimalField(default=0.0, max_digits=10, decimal_places=2)
     numero = models.IntegerField(default=0)
     status = models.BooleanField(default=False)
+    qntDias = models.JSONField(null=True, blank=True)
+
+
+
 
     def __str__(self):
         return self.nome
@@ -47,16 +54,33 @@ class Reserva(models.Model):
     cupons = models.ForeignKey(Cupons, on_delete=models.PROTECT, null=True, blank=True, db_constraint=False)
 
     # def save(self, *args, **kwargs):
-    #     if self.dataEntrada and self.dataSaida:
-    #         datas_entre = []
-    #         current_date = self.dataEntrada
-    #         while current_date <= self.dataSaida:
-    #             datas_entre.append(current_date.date())
-    #             current_date += timezone.timedelta(days=1)
-    #
-    #         self.qntDatas = len(datas_entre)
-    #         self.qntDias = ', '.join([str(date) for date in datas_entre])
-    #     super(Reserva, self).save(*args, **kwargs)
+    #     # Salva a reserva
+    #     super().save(*args, **kwargs)
+
+    def save(self, *args, **kwargs):
+        # Salva a reserva
+        super().save(*args, **kwargs)
+
+        if self.apartamento and self.qntDias:
+            # Recupera as datas existentes do apartamento
+            datas_exist = self.apartamento.qntDias.split(", ") if self.apartamento.qntDias else []
+
+            # Converte a sequência de dias em datas no formato "YYYY-MM-DD"
+            data_atual = self.dataEntrada
+            data_final = self.dataSaida
+            datas_novas = []
+            while data_atual <= data_final:
+                data_str = data_atual.strftime('%Y-%m-%d')
+                if data_str not in datas_exist:
+                    datas_novas.append(data_str)
+                data_atual += timedelta(days=1)
+
+            # Adiciona as novas datas às existentes
+            datas_exist.extend(datas_novas)
+
+            # Salva a string de datas atualizada no apartamento
+            self.apartamento.qntDias = ", ".join(datas_exist)
+            self.apartamento.save()
 
     def get_absolute_url(self):
         return reverse('administracao:reserva')

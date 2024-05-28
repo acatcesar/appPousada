@@ -10,6 +10,11 @@ from django.http import request, JsonResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from datetime import datetime, timedelta
+from django.core.exceptions import ValidationError
+from django.http import HttpResponseBadRequest
+from django.contrib import messages
+from django.contrib.messages import constants
+
 # class MainPage(LoginRequiredMixin, ListView):
 
 #     model = Reserva
@@ -56,6 +61,7 @@ class Homehospedagem(LoginRequiredMixin, ListView):
     #
     #     return self.form_invalid(form)
 
+
 class HomehospedagemNovo(LoginRequiredMixin, CreateView):
     model = Reserva
     form_class = ReservaFormCreate
@@ -69,17 +75,23 @@ class HomehospedagemNovo(LoginRequiredMixin, CreateView):
         reserva_obj = form.save(commit=False)
         reserva_obj.user = self.request.user
 
-
         if reserva_obj.dataEntrada and reserva_obj.dataSaida:
             datas_entre = []
             current_date = reserva_obj.dataEntrada
             while current_date <= reserva_obj.dataSaida:
-                datas_entre.append(current_date.date())
+                datas_entre.append(current_date.strftime("%d-%m-%Y"))  # Corrigido para o formato do campo qntDias
                 current_date += timezone.timedelta(days=1)
+
             reserva_obj.qntDatas = len(datas_entre)
             reserva_obj.qntDias = ', '.join([str(date) for date in datas_entre])
-        reserva_obj.valor *= reserva_obj.qntDatas
 
+            # Verificar se alguma das datas já está presente no campo qntDias de algum apartamento
+            for apartamento in Apartamento.objects.all():
+                if apartamento.qntDias and any(date in apartamento.qntDias for date in datas_entre):
+                    messages.add_message(self.request,constants.ERROR, 'Esse intervalo de data não está disponível')
+                    return redirect(reverse('administracao:create_reserva'))
+
+        reserva_obj.valor *= reserva_obj.qntDatas
 
         codigo_cupom = self.request.POST.get('codigo_cupom')
         if codigo_cupom:
@@ -126,7 +138,7 @@ def obter_apartamento_valor(request):
     datas_ocupadas_reais = []
     if datas_ocupadas:
         for data_str in datas_ocupadas.split(', '):
-            data = datetime.strptime(data_str, '%Y-%m-%d').date()
+            data = datetime.strptime(data_str, '%d-%m-%Y').date()
             datas_ocupadas_reais.append(data)
 
     # Calcula as datas disponíveis subtraindo as datas ocupadas do intervalo total
@@ -134,12 +146,13 @@ def obter_apartamento_valor(request):
     datas_disponiveis = []
     if datas_ocupadas_reais:
         data_atual = datetime.now().date()
-        while data_atual < datetime.now().date() + intervalo_total:
+        while data_atual <= datetime.now().date() + intervalo_total:
             if data_atual not in datas_ocupadas_reais:
-                datas_disponiveis.append(data_atual)
+                datas_disponiveis.append(data_atual.strftime('%d/%m/%Y'))  # Formata a data para dia/mês/ano
             data_atual += timedelta(days=1)
     else:
         datas_disponiveis = [datetime.now().date() + timedelta(days=i) for i in range(intervalo_total.days)]
+        datas_disponiveis = [data.strftime('%d/%m/%Y') for data in datas_disponiveis]  # Formata as datas
 
     return JsonResponse({'valor': valor, 'datas_disponiveis': datas_disponiveis})
 

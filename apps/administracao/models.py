@@ -57,9 +57,14 @@ class Reserva(models.Model):
     #     # Salva a reserva
     #     super().save(*args, **kwargs)
 
+
+
+
     def save(self, *args, **kwargs):
         # Salva a reserva
         super().save(*args, **kwargs)
+
+
 
         if self.apartamento and self.qntDias:
             # Recupera as datas existentes do apartamento
@@ -70,7 +75,7 @@ class Reserva(models.Model):
             data_final = self.dataSaida
             datas_novas = []
             while data_atual <= data_final:
-                data_str = data_atual.strftime('%Y-%m-%d')
+                data_str = data_atual.strftime('%d-%m-%Y')
                 if data_str not in datas_exist:
                     datas_novas.append(data_str)
                 data_atual += timedelta(days=1)
@@ -81,6 +86,8 @@ class Reserva(models.Model):
             # Salva a string de datas atualizada no apartamento
             self.apartamento.qntDias = ", ".join(datas_exist)
             self.apartamento.save()
+
+
 
     def get_absolute_url(self):
         return reverse('administracao:reserva')

@@ -113,6 +113,15 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
+{% if messages %}
+		{%for i in messages %}
+
+			<div class="alert {{i.tags}}" role="alert"
+				 		{{i}}
+			</div>
+		{% endfor%}
+{% endif %}
+
 <form method="POST" class="custom-form">
     {% csrf_token %}
 
@@ -133,6 +142,8 @@
     <label for="codigo_cupom">Código do Cupom:</label>
     <input type="text" id="codigo_cupom" name="codigo_cupom">
     <button type="submit" class="btn btn-info">Realizar Pagamento!</button>
+
+
 </form>
 
 

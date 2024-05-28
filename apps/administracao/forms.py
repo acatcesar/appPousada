@@ -16,6 +16,9 @@ class CreateAccountForm(UserCreationForm):
 
 class ReservaFormCreate(ModelForm):
 
+    dataEntrada = forms.DateField(widget=forms.DateInput(format='%d/%m/%Y'))
+    dataSaida = forms.DateField(widget=forms.DateInput(format='%d/%m/%Y'))
+
     def __init__(self, user, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['apartamento'].queryset = Apartamento.objects.all()

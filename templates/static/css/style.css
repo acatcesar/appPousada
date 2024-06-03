@@ -147,7 +147,7 @@ a {
           left: 0px;
           top: -80px;
           right: -100px;
-          border-radius: 10px; /* Opcional: Adiciona cantos arredondados */
+          border-radius: 10px;
            } }
 
     .hero .hero-img-wrap:after {
@@ -340,15 +340,17 @@ a {
     .we-help-section .imgs-grid .grid {
       position: relative; }
       .we-help-section .imgs-grid .grid img {
-        border-radius: 20px;
+        border-radius: 40px;
         max-width: 100%; }
       .we-help-section .imgs-grid .grid.grid-1 {
+         margin-left: -60px; /* Ajuste o valor conforme necessário */
         -ms-grid-column: 1;
         -ms-grid-column-span: 18;
         grid-column: 1 / span 18;
-        -ms-grid-row: 1;
+        -ms-grid-row: 10;
         -ms-grid-row-span: 27;
         grid-row: 1 / span 27; }
+
       .we-help-section .imgs-grid .grid.grid-2 {
         -ms-grid-column: 19;
         -ms-grid-column-span: 27;
@@ -357,14 +359,15 @@ a {
         -ms-grid-row-span: 5;
         grid-row: 1 / span 5;
         padding-left: 20px; }
-      .we-help-section .imgs-grid .grid.grid-3 {
-        -ms-grid-column: 14;
-        -ms-grid-column-span: 16;
-        grid-column: 14 / span 16;
-        -ms-grid-row: 6;
-        -ms-grid-row-span: 27;
-        grid-row: 6 / span 27;
-        padding-top: 20px; }
+.we-help-section .imgs-grid .grid.grid-3 {
+    -ms-grid-column: 10;
+    -ms-grid-column-span: 25; /* Aumentado de 23 para 25 */
+    grid-column: 4 / span 25; /* Aumentado de 20 para 25 */
+    -ms-grid-row: 5;
+    -ms-grid-row-span: 31; /* Aumentado de 27 para 31 */
+    grid-row: 5 / span 31; /* Aumentado de 27 para 31 */
+    padding-top: 30px;
+}
 
 .custom-list {
   width: 100%; }
@@ -718,7 +721,28 @@ textarea {
 
 .carousel-inner img {
     width: 100%;
-    height: 400px; /* Ajuste a altura conforme necessário */
+    height: 400px;
     object-fit: cover;
-    border-radius: 40px; /* Ajuste o valor para arredondar as bordas conforme desejado */
+    border-radius: 40px;
+}
+.map-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 5px; /* Espaçamento entre os elementos */
+    padding: 160px; /* Preenchimento ao redor dos elementos */
+
+
+}
+
+.map {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 5px; /* Adicionando margem entre os elementos */
+}
+
+.map h5 {
+    margin-bottom: 10px;
+    color: black;
+}
 }

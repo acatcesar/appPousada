@@ -108,21 +108,23 @@
 						</div>
 					</div>
 				</div>
+
 			</div>
 		<!-- End Hero Section -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 {% if messages %}
-		{%for i in messages %}
-
-			<div class="alert {{i.tags}}" role="alert"
-				 		{{i}}
-			</div>
-		{% endfor%}
+    {% for i in messages %}
+        <div class="alert {{ i.tags }}" role="alert">
+            {{ i.message }}
+        </div>
+    {% endfor %}
 {% endif %}
 
 <form method="POST" class="custom-form">
+
+
     {% csrf_token %}
 
     <label for="apartamento">Apartamento:</label>

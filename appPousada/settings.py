@@ -19,6 +19,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+MEDIA_ROOT = BASE_DIR / "media"
 
 # Application definition
 
@@ -30,6 +31,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
+    'cpf_field',
     'apps.administracao',
 
 ]
@@ -113,7 +115,6 @@ LANGUAGE_CODE = 'pt-BR'
 
 TIME_ZONE = 'America/Sao_Paulo'
 
-TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
@@ -137,7 +138,7 @@ LOGIN_REDIRECT_URL = 'administracao:create_reserva'
 
 LOGIN_URL = 'administracao:login'
 
-
+LOGOUT_REDIRECT_URL = 'administracao:home'
 
 MESSAGE_TAGS = {
     constants.DEBUG: 'alert-primary',
@@ -146,3 +147,8 @@ MESSAGE_TAGS = {
     constants.INFO: 'alert-info',
     constants.WARNING: 'alert-warning'
 }
+
+# AUTHENTICATION_BACKENDS = (
+#     'django.contrib.auth.backends.ModelBackend', # this is default
+#     'guardian.backends.ObjectPermissionBackend',
+# )

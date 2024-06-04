@@ -14,6 +14,7 @@ from django.core.exceptions import ValidationError
 from django.http import HttpResponseBadRequest
 from django.contrib import messages
 from django.contrib.messages import constants
+from sqlalchemy.sql.functions import user
 
 # class MainPage(LoginRequiredMixin, ListView):
 
@@ -71,6 +72,11 @@ class HomehospedagemNovo(LoginRequiredMixin, CreateView):
         kwargs.update({'user': self.request.user})
         return kwargs
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['apartamentos'] = Apartamento.objects.filter(status=True)
+        return context
+
     def form_valid(self, form):
         reserva_obj = form.save(commit=False)
         reserva_obj.user = self.request.user
@@ -122,10 +128,10 @@ class CreateAccount(FormView):
 class Editaccount(LoginRequiredMixin, UpdateView):
     template_name = "editaccount.html"
     model = Usuario
-    fields = ['first_name', 'last_name', 'email']
+    fields = ['first_name', 'last_name', 'email', 'cpf' ,'celular', 'endereco']
 
-    # def get_success_url(self):
-    #     return reverse('administracao:reserva')
+    def get_success_url(self):
+        return reverse('administracao:create_reserva')
 
 
 def obter_apartamento_valor(request):

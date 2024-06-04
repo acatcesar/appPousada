@@ -2,7 +2,7 @@ import json
 import random
 import string
 from datetime import datetime
-
+from sqlalchemy.sql.functions import user
 from datetime import timedelta, date
 
 from django.db import models
@@ -11,6 +11,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 from django.urls import reverse
+from cpf_field.models import CPFField
 
 class Apartamento(models.Model):
     nome = models.CharField(max_length=100)
@@ -18,6 +19,7 @@ class Apartamento(models.Model):
     numero = models.IntegerField(default=0)
     status = models.BooleanField(default=False)
     qntDias = models.JSONField(null=True, blank=True)
+    foto = models.ImageField(upload_to='fotos_apartamento')
 
 
 
@@ -41,6 +43,9 @@ class Cupons(models.Model):
     
 class Usuario(AbstractUser):
     cupons_utilizados = models.ManyToManyField(Cupons)
+    cpf = CPFField('cpf')
+    celular = models.CharField(max_length=20, null=True, blank=True)
+    endereco = models.CharField(max_length=100, null=True, blank=True)
 
 class Reserva(models.Model):
     valor = models.DecimalField(default=0.0, max_digits=10, decimal_places=2)

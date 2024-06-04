@@ -12,12 +12,13 @@ class CreateAccountForm(UserCreationForm):
 
     class Meta:
         model = Usuario
-        fields = ('username', 'email', 'password1', 'password2')
+        fields = ('username', 'email', 'password1', 'password2', 'cpf', 'endereco', 'celular')
 
 class ReservaFormCreate(ModelForm):
 
     dataEntrada = forms.DateField(widget=forms.DateInput(format='%d/%m/%Y'))
     dataSaida = forms.DateField(widget=forms.DateInput(format='%d/%m/%Y'))
+
 
     def __init__(self, user, *args, **kwargs):
         super().__init__(*args, **kwargs)

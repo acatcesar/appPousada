@@ -15,10 +15,14 @@ urlpatterns = [
     path('login/', auth_view.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', auth_view.LogoutView.as_view(template_name='logout.html'), name='logout'),
     path('createaccount/', CreateAccount.as_view(), name='createaccount'),
-    path('editaccount/<int:pk>', Editaccount.as_view(), name='editaccount'),
+
+    path('editaccount/<int:pk>/', Editaccount.as_view(), name='editaccount'),
+
     path('homehospedagem', Homehospedagem.as_view(), name='homehospedagem'),
     path('obter_apartamento_valor/', obter_apartamento_valor, name='obter_apartamento_valor'),
     path('apartamento/', Apartamentolista.as_view(), name='apartamento'),
+    path('mudarsenha/', auth_view.PasswordChangeView.as_view(template_name='editarperfil.html', success_url=reverse_lazy('administracao:novo')),
+         name='mudarsenha'),
 
 
 

@@ -1,12 +1,99 @@
-    <header>   <div class="z-10 h-full py-32 md:py-0 text-gray-100 text-center flex items-center flex-col">
-            <form method="post">
-                {% csrf_token %}
-                <fieldset class="form-group">
-                    <legend class="border-bottom mb-4">Crie uma conta para continuar</legend>
-                    {{ form }}
-                </fieldset>
-                <button class="bg-red-600 py-1 px-3 text-white w-full md:text-lg rounded-md" type="submit">Criar Conta</button>
-            </form>
+{% load static %}
 
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sua Página</title>
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="{% static 'css/tiny-slider.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+</head>
+<body>
+
+<header>
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <form method="post">
+                    {% csrf_token %}
+                    <fieldset class="form-group">
+                        <legend class="text-left">Crie uma conta para continuar</legend>
+                        <div class="mb-3">
+                            <label for="id_username" class="form-label">Nome do Usuario:</label>
+                            <input type="text" class="form-control" id="id_username" name="username">
+                            {% for error in form.username.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_email" class="form-label">Email:</label>
+                            <input type="email" class="form-control" id="id_email" name="email">
+                            {% for error in form.email.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_password1" class="form-label">Senha:</label>
+                            <input type="password" class="form-control" id="id_password1" name="password1">
+                            {% for error in form.password1.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                            {% if form.password1.help_text %}
+                                <small class="text-muted">{{ form.password1.help_text }}</small>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_password2" class="form-label">Confirmar Senha:</label>
+                            <input type="password" class="form-control" id="id_password2" name="password2">
+                            {% for error in form.password2.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_cpf" class="form-label">CPF:</label>
+                            <input type="text" class="form-control" id="id_cpf" name="cpf">
+                            {% for error in form.cpf.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_endereco" class="form-label">Endereço:</label>
+                            <input type="text" class="form-control" id="id_endereco" name="endereco">
+                            {% for error in form.endereco.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_celular" class="form-label">Celular:</label>
+                            <input type="text" class="form-control" id="id_celular" name="celular">
+                            {% for error in form.celular.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </fieldset>
+                    <button type="submit" class="btn btn-primary">Criar Conta</button>
+                </form>
+            </div>
         </div>
-    </header>
+    </div>
+</header>
+
+</body>
+</html>

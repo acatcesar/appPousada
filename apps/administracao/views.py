@@ -85,17 +85,17 @@ class HomehospedagemNovo(LoginRequiredMixin, CreateView):
             datas_entre = []
             current_date = reserva_obj.dataEntrada
             while current_date <= reserva_obj.dataSaida:
-                datas_entre.append(current_date.strftime("%d-%m-%Y"))  # Corrigido para o formato do campo qntDias
+                datas_entre.append(current_date.strftime("%d-%m-%Y"))
                 current_date += timezone.timedelta(days=1)
 
             reserva_obj.qntDatas = len(datas_entre)
             reserva_obj.qntDias = ', '.join([str(date) for date in datas_entre])
 
-            # Verificar se alguma das datas já está presente no campo qntDias de algum apartamento
-            for apartamento in Apartamento.objects.all():
-                if apartamento.qntDias and any(date in apartamento.qntDias for date in datas_entre):
-                    messages.add_message(self.request,constants.ERROR, 'Esse intervalo de data não está disponível')
-                    return redirect(reverse('administracao:create_reserva'))
+
+            apartamento_selecionado = reserva_obj.apartamento
+            if apartamento_selecionado.qntDias and any(date in apartamento_selecionado.qntDias for date in datas_entre):
+                messages.add_message(self.request,constants.ERROR, 'Esse intervalo de data não está disponível')
+                return redirect(reverse('administracao:create_reserva'))
 
         reserva_obj.valor *= reserva_obj.qntDatas
 

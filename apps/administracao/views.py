@@ -1,11 +1,11 @@
-import io
 
+from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import render, redirect, reverse
-from django.db import models
+
 from .models import Reserva, Usuario,  Cupons
 from .models import Apartamento
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import FormMainPage, ReservaFormCreate
+from .forms import FormMainPage, ReservaFormCreate, RelatorioReservasForm, RelatorioUsuariosForm
 from django.views.generic import TemplateView, ListView, DetailView, FormView, UpdateView, CreateView
 from .forms import CreateAccountForm
 from django.http import request, JsonResponse
@@ -176,38 +176,101 @@ from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 from django.http import HttpResponse
 import io
+
+def is_superuser(user):
+    return user.is_superuser
+
+@user_passes_test(is_superuser)
 def relatorio_reservas(request):
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="relatorio_reservas.pdf"'
+    if request.method == 'POST':
+        form = RelatorioReservasForm(request.POST)
+        if form.is_valid():
+            data_inicio = form.cleaned_data['data_inicio']
+            data_fim = form.cleaned_data['data_fim']
 
-    buffer = io.BytesIO()
-    doc = SimpleDocTemplate(buffer, pagesize=letter)
-    data = []
+            response = HttpResponse(content_type='application/pdf')
+            response['Content-Disposition'] = 'attachment; filename="relatorio_reservas.pdf"'
 
-    reservas = Reserva.objects.filter(user=request.user)
-
-    data.append(['Valor', 'Data Entrada', 'Data Saída'])
-    for reserva in reservas:
-        data.append([f'R${reserva.valor:.2f}', reserva.dataEntrada.strftime('%d-%m-%Y'), reserva.dataSaida.strftime('%d-%m-%Y')])
-
-    # Criando uma tabela e definindo estilo
-    table = Table(data)
-    style = TableStyle([('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-                        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-                        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-                        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-                        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-                        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-                        ('GRID', (0, 0), (-1, -1), 1, colors.black)])
-    table.setStyle(style)
-
-    # Adicionando a tabela ao documento
-    doc.build([table])
-
-    pdf = buffer.getvalue()
-    buffer.close()
-    response.write(pdf)
-
-    return response
+            buffer = io.BytesIO()
+            doc = SimpleDocTemplate(buffer, pagesize=letter)
+            data = []
 
 
+            reservas = Reserva.objects.filter(user=request.user, dataEntrada__gte=data_inicio, dataSaida__lte=data_fim)
+
+            data.append([ 'Data Entrada', 'Data Saída','Apartamento', 'Cliente', 'Valor'])
+            total_valor = 0  # Inicializa o total_valor
+            for reserva in reservas:
+                data.append([ reserva.dataEntrada.strftime('%d-%m-%Y'),
+                             reserva.dataSaida.strftime('%d-%m-%Y'),reserva.apartamento, reserva.user, f'R${reserva.valor:.2f}'])
+                total_valor += reserva.valor  # Adiciona o valor da reserva ao total
+
+            # Adiciona a linha final com o total_valor
+            data.append([ '','','', 'Total:', f'R${total_valor:.2f}'])
+
+            # Criando uma tabela e definindo estilo
+            table = Table(data)
+            style = TableStyle([('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+                                ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                                ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                                ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+                                ('GRID', (0, 0), (-1, -1), 1, colors.black)])
+            table.setStyle(style)
+
+            # Adicionando a tabela ao documento
+            doc.build([table])
+
+            pdf = buffer.getvalue()
+            buffer.close()
+            response.write(pdf)
+
+            return response
+    else:
+        form = RelatorioReservasForm()
+
+    return render(request, 'relatorio_template.html', {'form': form})
+
+
+@user_passes_test(is_superuser)
+def relatorio_usuarios(request):
+    if request.method == 'POST':
+        form = RelatorioUsuariosForm(request.POST)
+        if form.is_valid():
+            response = HttpResponse(content_type='application/pdf')
+            response['Content-Disposition'] = 'attachment; filename="relatorio_usuarios.pdf"'
+
+            buffer = io.BytesIO()
+            doc = SimpleDocTemplate(buffer, pagesize=letter)
+            data = []
+
+            usuarios = Usuario.objects.all()
+
+            data.append(['ID', 'Nome', 'E-mail', 'CPF', 'Celular', 'Endereço', 'Cupons Utilizados'])
+
+            for usuario in usuarios:
+                cupons_utilizados = ', '.join([cupom.nome for cupom in usuario.cupons_utilizados.all()])
+                data.append([usuario.id, usuario.username, usuario.email, usuario.cpf, usuario.celular, usuario.endereco, cupons_utilizados])
+
+            table = Table(data)
+            style = TableStyle([('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+                                ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                                ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                                ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+                                ('GRID', (0, 0), (-1, -1), 1, colors.black)])
+            table.setStyle(style)
+
+            doc.build([table])
+
+            pdf = buffer.getvalue()
+            buffer.close()
+            response.write(pdf)
+
+            return response
+    else:
+        form = RelatorioUsuariosForm()
+
+    return render(request, 'relatorio_cupons.html', {'form': form})

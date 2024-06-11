@@ -27,3 +27,11 @@ class ReservaFormCreate(ModelForm):
     class Meta:
         model = Reserva
         fields = ['apartamento','dataEntrada','dataSaida', 'cupons', 'valor']
+
+class RelatorioReservasForm(forms.Form):
+    data_inicio = forms.DateField(label='Data de Início')
+    data_fim = forms.DateField(label='Data de Fim')
+
+class RelatorioUsuariosForm(forms.Form):
+    data_inicio = forms.DateField(label='Data de Início')
+    data_fim = forms.DateField(label='Data de Fim')

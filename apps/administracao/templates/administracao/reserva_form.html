@@ -189,37 +189,12 @@
     <button type="submit" class="btn btn-info">Realizar Pagamento!</button>
 <!-- Adicione este botão no local desejado em seu HTML -->
 <!-- Adicione este botão no local desejado em seu HTML -->
-<button type="button" class="btn btn-success" id="btnGerarRelatorio">Gerar Relatório de Reservas</button>
+
 
 </form>
 
 <!-- Adicione este script na parte inferior do seu HTML, após incluir a biblioteca jQuery -->
-<script>
-$(document).ready(function () {
-    $('#btnGerarRelatorio').click(function () {
-        $.ajax({
-            type: 'GET',
-            url: '{% url "administracao:gerar_relatorio" %}',
-            xhrFields: {
-                responseType: 'blob' // Espera uma resposta de blob
-            },
-            success: function(data) {
-                var blob = new Blob([data]); // Cria um blob com os dados retornados
-                var link = document.createElement('a'); // Cria um elemento <a>
-                link.href = window.URL.createObjectURL(blob); // Atribui a URL do blob ao link
-                link.download = 'relatorio_reservas.pdf'; // Define o nome do arquivo para download
-                document.body.appendChild(link); // Adiciona o link ao corpo do documento
-                link.click(); // Simula um clique no link para iniciar o download
-                document.body.removeChild(link); // Remove o link depois do download
-                alert('Relatório gerado com sucesso!');
-            },
-            error: function(xhr, textStatus, errorThrown) {
-                alert('Erro ao gerar o relatório');
-            }
-        });
-    });
-});
-</script>
+
 
 
 

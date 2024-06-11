@@ -2,7 +2,7 @@ from django.urls import path, reverse_lazy
 
 from . import views
 from .views import MainPage, Homehospedagem, CreateAccount, Editaccount, HomehospedagemNovo, \
-    obter_apartamento_valor, Apartamentolista, relatorio_reservas
+    obter_apartamento_valor, Apartamentolista, relatorio_reservas, relatorio_usuarios
 from django.contrib.auth import views as auth_view
 from django.urls import path
 
@@ -23,7 +23,9 @@ urlpatterns = [
     path('apartamento/', Apartamentolista.as_view(), name='apartamento'),
     path('mudarsenha/', auth_view.PasswordChangeView.as_view(template_name='editarperfil.html', success_url=reverse_lazy('administracao:novo')),
          name='mudarsenha'),
-    path('gerar_relatorio/', relatorio_reservas, name='gerar_relatorio'),
+    # path('gerar_relatorio/', relatorio_reservas, name='gerar_relatorio'),
+    path('relatorio_reservas/', relatorio_reservas, name='relatorio_reservas'),
+    path('relatorio_usuarios/', relatorio_usuarios, name='relatorio_usuarios'),
 
     # path('gerar_relatorio/<start_date>/<end_date>/', relatorio_reservas, name='gerar_relatorio'),
 

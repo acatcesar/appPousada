@@ -1,3 +1,5 @@
+import io
+
 from django.shortcuts import render, redirect, reverse
 from django.db import models
 from .models import Reserva, Usuario,  Cupons
@@ -15,6 +17,10 @@ from django.http import HttpResponseBadRequest
 from django.contrib import messages
 from django.contrib.messages import constants
 from sqlalchemy.sql.functions import user
+from reportlab.pdfgen import canvas
+from django.http import HttpResponse
+from django.template.loader import get_template
+import xhtml2pdf.pisa as pisa
 
 # class MainPage(LoginRequiredMixin, ListView):
 
@@ -164,3 +170,44 @@ def obter_apartamento_valor(request):
 
 class Apartamentolista(ListView):
     model = Apartamento
+
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+from django.http import HttpResponse
+import io
+def relatorio_reservas(request):
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="relatorio_reservas.pdf"'
+
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter)
+    data = []
+
+    reservas = Reserva.objects.filter(user=request.user)
+
+    data.append(['Valor', 'Data Entrada', 'Data Saída'])
+    for reserva in reservas:
+        data.append([f'R${reserva.valor:.2f}', reserva.dataEntrada.strftime('%d-%m-%Y'), reserva.dataSaida.strftime('%d-%m-%Y')])
+
+    # Criando uma tabela e definindo estilo
+    table = Table(data)
+    style = TableStyle([('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+                        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+                        ('GRID', (0, 0), (-1, -1), 1, colors.black)])
+    table.setStyle(style)
+
+    # Adicionando a tabela ao documento
+    doc.build([table])
+
+    pdf = buffer.getvalue()
+    buffer.close()
+    response.write(pdf)
+
+    return response
+
+

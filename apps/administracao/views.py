@@ -9,28 +9,20 @@ from .forms import FormMainPage, ReservaFormCreate, RelatorioReservasForm, Relat
 from django.views.generic import TemplateView, ListView, DetailView, FormView, UpdateView, CreateView
 from .forms import CreateAccountForm
 from django.http import request, JsonResponse
-from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from datetime import datetime, timedelta
-from django.core.exceptions import ValidationError
-from django.http import HttpResponseBadRequest
 from django.contrib import messages
 from django.contrib.messages import constants
-from sqlalchemy.sql.functions import user
-from reportlab.pdfgen import canvas
-from django.http import HttpResponse
-from django.template.loader import get_template
-import xhtml2pdf.pisa as pisa
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth.views import PasswordResetView
+from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
+from django.urls import reverse_lazy
+import requests
 
-# class MainPage(LoginRequiredMixin, ListView):
-
-#     model = Reserva
-#     paginate_by = 10
-
-#     def listing(request):
-#         local_list = Reserva.objects.all()
-
-#         return render(request, "homehospedagem_form.html")
 
 
 
@@ -58,31 +50,45 @@ class MainPage(FormView):
 class Homehospedagem(LoginRequiredMixin, ListView):
     model = Reserva
 
-    # def get_form_kwargs(self):
-    #     kwargs = super(Homehospedagem, self).get_form_kwargs()
-    #     kwargs.update({'user': self.request.user})
-    #     return kwargs
-
-    # def form_valid (self, form):
-    #     apropriacao_obj = form.save (commit=False)
-    #
-    #     return self.form_invalid(form)
-
 
 class HomehospedagemNovo(LoginRequiredMixin, CreateView):
     model = Reserva
     form_class = ReservaFormCreate
 
+    def get_weather(self):
+        url = "https://api.hgbrasil.com/weather?woeid=90200648"
+        response = requests.get(url)
+        data = response.json()
+        return data
+
+    def get_condition_icon_url(self, condition_slug):
+        base_url = "https://assets.hgbrasil.com/weather/icons/conditions/"
+        return base_url + condition_slug + ".svg"
+
+    def get_moon_phase_icon_url(self, moon_phase):
+        base_url = "https://assets.hgbrasil.com/weather/icons/moon/"
+        return base_url + moon_phase.replace(" ", "_") + ".png"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        weather_data = self.get_weather()
+        context['weather_data'] = weather_data
+        context['apartamentos'] = Apartamento.objects.filter(status=True)
+
+        condition_slug = weather_data["results"]["condition_slug"]
+        moon_phase = weather_data["results"]["moon_phase"]
+
+        condition_icon_url = self.get_condition_icon_url(condition_slug)
+        moon_phase_icon_url = self.get_moon_phase_icon_url(moon_phase)
+
+        context['condition_icon_url'] = condition_icon_url
+        context['moon_phase_icon_url'] = moon_phase_icon_url
+
+        return context
     def get_form_kwargs(self):
         kwargs = super(HomehospedagemNovo, self).get_form_kwargs()
         kwargs.update({'user': self.request.user})
         return kwargs
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['apartamentos'] = Apartamento.objects.filter(status=True)
-        return context
-
     def form_valid(self, form):
         reserva_obj = form.save(commit=False)
         reserva_obj.user = self.request.user
@@ -111,6 +117,7 @@ class HomehospedagemNovo(LoginRequiredMixin, CreateView):
                 cupom = Cupons.objects.get(codigo=codigo_cupom, utilizado=False)
                 reserva_obj.valor -= cupom.desconto
                 cupom.utilizado = True
+                self.request.user.cupons_utilizados.add(cupom)
                 cupom.save()
                 reserva_obj.cupons = cupom
             except Cupons.DoesNotExist:
@@ -120,6 +127,36 @@ class HomehospedagemNovo(LoginRequiredMixin, CreateView):
         reserva_obj.save()
         return super().form_valid(form)
 
+
+class CustomPasswordResetView(PasswordResetView):
+    email_template_name = 'registration/password_reset_email.html'
+    success_url = reverse_lazy('password_reset_done')
+
+    def form_valid(self, form):
+        email = form.cleaned_data['email']
+        associated_users = Usuario.objects.filter(email=email)
+
+        for user in associated_users:
+            new_password = Usuario.objects.make_random_password()
+            user.set_password(new_password)
+            user.save()
+
+
+            subject = 'Password Reset Requested'
+            email_template_name = 'registration/password_reset_email.html'
+            c = {
+                'email': user.email,
+                'domain': self.request.META['HTTP_HOST'],
+                'site_name': 'Pousada Praia Campeche',
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'user': user,
+                'token': default_token_generator.make_token(user),
+                'new_password': new_password,
+            }
+            email = render_to_string(email_template_name, c)
+            send_mail(subject, email, 'augusto.tavares.a@gmail.com', [user.email], fail_silently=False)
+
+        return super().form_valid(form)
 
 class CreateAccount(FormView):
     template_name = "createaccount.html"
@@ -144,27 +181,27 @@ def obter_apartamento_valor(request):
     apartamento_id = request.GET.get('apartamento_id')
     apartamento = Apartamento.objects.get(id=apartamento_id)
     valor = apartamento.valor
-    datas_ocupadas = apartamento.qntDias  # Obtém as datas ocupadas do apartamento
+    datas_ocupadas = apartamento.qntDias
 
-    # Converte as datas ocupadas de strings para objetos datetime
+
     datas_ocupadas_reais = []
     if datas_ocupadas:
         for data_str in datas_ocupadas.split(', '):
             data = datetime.strptime(data_str, '%d-%m-%Y').date()
             datas_ocupadas_reais.append(data)
 
-    # Calcula as datas disponíveis subtraindo as datas ocupadas do intervalo total
-    intervalo_total = (datetime.now().date() + timedelta(days=365)) - datetime.now().date()  # Intervalo de um ano
+
+    intervalo_total = (datetime.now().date() + timedelta(days=365)) - datetime.now().date()
     datas_disponiveis = []
     if datas_ocupadas_reais:
         data_atual = datetime.now().date()
         while data_atual <= datetime.now().date() + intervalo_total:
             if data_atual not in datas_ocupadas_reais:
-                datas_disponiveis.append(data_atual.strftime('%d/%m/%Y'))  # Formata a data para dia/mês/ano
+                datas_disponiveis.append(data_atual.strftime('%d/%m/%Y'))
             data_atual += timedelta(days=1)
     else:
         datas_disponiveis = [datetime.now().date() + timedelta(days=i) for i in range(intervalo_total.days)]
-        datas_disponiveis = [data.strftime('%d/%m/%Y') for data in datas_disponiveis]  # Formata as datas
+        datas_disponiveis = [data.strftime('%d/%m/%Y') for data in datas_disponiveis]
 
     return JsonResponse({'valor': valor, 'datas_disponiveis': datas_disponiveis})
 
@@ -195,20 +232,19 @@ def relatorio_reservas(request):
             doc = SimpleDocTemplate(buffer, pagesize=letter)
             data = []
 
-
             reservas = Reserva.objects.filter(user=request.user, dataEntrada__gte=data_inicio, dataSaida__lte=data_fim)
 
             data.append([ 'Data Entrada', 'Data Saída','Apartamento', 'Cliente', 'Valor'])
-            total_valor = 0  # Inicializa o total_valor
+            total_valor = 0
             for reserva in reservas:
                 data.append([ reserva.dataEntrada.strftime('%d-%m-%Y'),
                              reserva.dataSaida.strftime('%d-%m-%Y'),reserva.apartamento, reserva.user, f'R${reserva.valor:.2f}'])
-                total_valor += reserva.valor  # Adiciona o valor da reserva ao total
+                total_valor += reserva.valor
 
-            # Adiciona a linha final com o total_valor
+
             data.append([ '','','', 'Total:', f'R${total_valor:.2f}'])
 
-            # Criando uma tabela e definindo estilo
+
             table = Table(data)
             style = TableStyle([('BACKGROUND', (0, 0), (-1, 0), colors.grey),
                                 ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
@@ -219,7 +255,7 @@ def relatorio_reservas(request):
                                 ('GRID', (0, 0), (-1, -1), 1, colors.black)])
             table.setStyle(style)
 
-            # Adicionando a tabela ao documento
+
             doc.build([table])
 
             pdf = buffer.getvalue()
@@ -247,11 +283,11 @@ def relatorio_usuarios(request):
 
             usuarios = Usuario.objects.all()
 
-            data.append(['ID', 'Nome', 'E-mail', 'CPF', 'Celular', 'Endereço', 'Cupons Utilizados'])
+            data.append(['Data Ultimo Login', 'Usuário', 'E-mail', 'CPF',  'Cupons Utilizados'])
 
             for usuario in usuarios:
-                cupons_utilizados = ', '.join([cupom.nome for cupom in usuario.cupons_utilizados.all()])
-                data.append([usuario.id, usuario.username, usuario.email, usuario.cpf, usuario.celular, usuario.endereco, cupons_utilizados])
+                cupons_utilizados = ', '.join([cupom.codigo for cupom in usuario.cupons_utilizados.all()])
+                data.append([usuario.date_joined.strftime('%d-%m-%Y'), usuario.username, usuario.email, usuario.cpf, cupons_utilizados])
 
             table = Table(data)
             style = TableStyle([('BACKGROUND', (0, 0), (-1, 0), colors.grey),

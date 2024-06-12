@@ -21,9 +21,6 @@ class Apartamento(models.Model):
     qntDias = models.JSONField(null=True, blank=True)
     foto = models.ImageField(upload_to='fotos_apartamento')
 
-
-
-
     def __str__(self):
         return self.nome
 
@@ -58,13 +55,6 @@ class Reserva(models.Model):
     data_criacao = models.DateTimeField(default=timezone.now)
     cupons = models.ForeignKey(Cupons, on_delete=models.PROTECT, null=True, blank=True, db_constraint=False)
 
-    # def save(self, *args, **kwargs):
-    #     # Salva a reserva
-    #     super().save(*args, **kwargs)
-
-
-
-
     def save(self, *args, **kwargs):
         # Salva a reserva
         super().save(*args, **kwargs)
@@ -72,10 +62,8 @@ class Reserva(models.Model):
 
 
         if self.apartamento and self.qntDias:
-            # Recupera as datas existentes do apartamento
-            datas_exist = self.apartamento.qntDias.split(", ") if self.apartamento.qntDias else []
 
-            # Converte a sequência de dias em datas no formato "YYYY-MM-DD"
+            datas_exist = self.apartamento.qntDias.split(", ") if self.apartamento.qntDias else []
             data_atual = self.dataEntrada
             data_final = self.dataSaida
             datas_novas = []
@@ -85,14 +73,10 @@ class Reserva(models.Model):
                     datas_novas.append(data_str)
                 data_atual += timedelta(days=1)
 
-            # Adiciona as novas datas às existentes
             datas_exist.extend(datas_novas)
 
-            # Salva a string de datas atualizada no apartamento
             self.apartamento.qntDias = ", ".join(datas_exist)
             self.apartamento.save()
-
-
 
     def get_absolute_url(self):
         return reverse('administracao:reserva')

@@ -9,8 +9,7 @@ from django.http import HttpResponseRedirect
 from .models import Reserva
 from django.utils.translation import gettext_lazy as _
 
-# admin.site.register(Cupons)
-# admin.site.register(Usuario)
+
 @admin.register(Usuario)
 class UsuarioAdmin(admin.ModelAdmin):
     class Media:

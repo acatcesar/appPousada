@@ -33,5 +33,4 @@ class RelatorioReservasForm(forms.Form):
     data_fim = forms.DateField(label='Data de Fim')
 
 class RelatorioUsuariosForm(forms.Form):
-    data_inicio = forms.DateField(label='Data de Início')
-    data_fim = forms.DateField(label='Data de Fim')
+    pass

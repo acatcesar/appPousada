@@ -12,10 +12,21 @@ from django.utils.translation import gettext_lazy as _
 
 @admin.register(Usuario)
 class UsuarioAdmin(admin.ModelAdmin):
+    list_display = ( 'username','gerar_relatorio_button')
+
+
+    def gerar_relatorio_button(self, obj):
+        return format_html('<a class="button" href="{}">Gerar Relatório</a>', reverse('administracao:relatorio_usuarios'))
+
+    gerar_relatorio_button.short_description = "Relatório"
+    gerar_relatorio_button.allow_tags = True
     class Media:
         css = {
             'all': (static('css/cssadmin.css'),),
         }
+
+
+
 
 
 @admin.register(Apartamento)

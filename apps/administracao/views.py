@@ -1,7 +1,6 @@
 
 from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import render, redirect, reverse
-
 from .models import Reserva, Usuario,  Cupons
 from .models import Apartamento
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -22,6 +21,11 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.urls import reverse_lazy
 import requests
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+from django.http import HttpResponse
+import io
 
 
 
@@ -45,10 +49,6 @@ class MainPage(FormView):
         else:
             return reverse('administracao:createaccount')
 
-
-
-class Homehospedagem(LoginRequiredMixin, ListView):
-    model = Reserva
 
 
 class HomehospedagemNovo(LoginRequiredMixin, CreateView):
@@ -205,14 +205,7 @@ def obter_apartamento_valor(request):
 
     return JsonResponse({'valor': valor, 'datas_disponiveis': datas_disponiveis})
 
-class Apartamentolista(ListView):
-    model = Apartamento
 
-from reportlab.lib import colors
-from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
-from django.http import HttpResponse
-import io
 
 def is_superuser(user):
     return user.is_superuser

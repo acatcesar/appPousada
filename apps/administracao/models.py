@@ -79,7 +79,7 @@ class Reserva(models.Model):
             self.apartamento.save()
 
     def get_absolute_url(self):
-        return reverse('administracao:reserva')
+        return reverse('administracao:create_reserva')
 
 
 

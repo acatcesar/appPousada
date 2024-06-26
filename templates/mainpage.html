@@ -9,7 +9,7 @@
   <link rel="shortcut icon" href="favicon.png">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Project</title>
+    <title>Plataforma Pousada Praia Campeche</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js"></script>
@@ -41,18 +41,12 @@
 				<div class="collapse navbar-collapse" id="navbarsFurni">
 					<ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
 						<li class="nav-item active">
-							<a class="nav-link" href="index.html">Home</a>
+							<a class="nav-link" href="">Home</a>
 						</li>
-						<li><a class="nav-link" href="shop.html">Shop</a></li>
-						<li><a class="nav-link" href="about.html">About us</a></li>
-						<li><a class="nav-link" href="services.html">Services</a></li>
-						<li><a class="nav-link" href="blog.html">Blog</a></li>
-						<li><a class="nav-link" href="contact.html">Contact us</a></li>
 					</ul>
 
 					<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
 						<li><a class="nav-link" href="{% url 'administracao:login' %}"><img src="{% static 'images/user.svg' %}"></a></li>
-						<li><a class="nav-link" href="cart.html"><img src="{% static 'images/cart.svg' %}"></a></li>
 					</ul>
                     {% if user.is_authenticated %}					
                         {% endif %}
@@ -72,7 +66,7 @@
 								<p class="mb-4">Encontrar uma pousada famíliar em Campeche não precisa ser complicado. Receba as boas-vindas da Pousada Praia Campeche, uma boa opção para viajantes como você.
 												Você vai desfrutar de um quarto com uma atmosfera relaxante, que conta com apartamento completo.
 								</p>
-								<p><a href="" class="btn btn-secondary me-2">Shop Now</a><a href="#" class="btn btn-white-outline">Explore</a></p>
+								<p><a href="" class="btn btn-secondary me-2">Acessar</a><a href="{% url 'administracao:login' %}" class="btn btn-white-outline">Explorar</a></p>
 							</div>
 						</div>
 <div class="col-lg-7">
@@ -109,13 +103,13 @@
 					<div class="col-md-12 col-lg-3 mb-5 mb-lg-0">
 						<h2 class="mb-4 section-title">Confira nossas opções.</h2>
 						<p class="mb-4">Possuimos opções de quartos com 1 ou 2 dormitórios, com camas de casal e solteiro, além de salão de festas e churrasqueiras. </p>
-						<p><a href="shop.html" class="btn">Conferir</a></p>
+						<p><a href="{% url 'administracao:login' %}" class="btn">Conferir</a></p>
 					</div> 
 					<!-- End Column 1 -->
 
 					<!-- Start Column 2 -->
 					<div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-						<a class="product-item" href="cart.html">
+						<a class="product-item" href="{% url 'administracao:login' %}">
 							<img src="{% static 'images/quarto.png' %}" class="img-fluid product-thumbnail">
 
 
@@ -263,59 +257,11 @@
 							<li>A Pousada encontrasse em uma das ruas mais badaladas do campeche, Lomba do Sabão</li>
 							<li>Praia do Campeche possui uma Orla de extensão de 3 km localizada no Sul da Ilha de Florianópolis.</li>
 						</ul>
-						<p><a herf="#" class="btn">Explore</a></p>
 					</div>
 				</div>
 			</div>
 		</div>
-		<!-- End We Help Section -->
-		<div class="popular-product">
-			<div class="container">
-				<div class="row">
 
-					<div class="col-12 col-md-6 col-lg-4 mb-4 mb-lg-0">
-						<div class="product-item-sm d-flex">
-							<div class="thumbnail">
-								<img src="{% static 'images/product-1.png'%}" alt="Image" class="img-fluid">
-							</div>
-							<div class="pt-3">
-								<h3>Nordic Chair</h3>
-								<p>Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio </p>
-								<p><a href="#">Read More</a></p>
-							</div>
-						</div>
-					</div>
-
-					<div class="col-12 col-md-6 col-lg-4 mb-4 mb-lg-0">
-						<div class="product-item-sm d-flex">
-							<div class="thumbnail">
-								<img src="{% static 'images/product-2.png'%}" alt="Image" class="img-fluid">
-							</div>
-							<div class="pt-3">
-								<h3>Kruzo Aero Chair</h3>
-								<p>Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio </p>
-								<p><a href="#">Read More</a></p>
-							</div>
-						</div>
-					</div>
-
-					<div class="col-12 col-md-6 col-lg-4 mb-4 mb-lg-0">
-						<div class="product-item-sm d-flex">
-							<div class="thumbnail">
-								<img src="{% static 'images/product-3.png'%}" alt="Image" class="img-fluid">
-							</div>
-							<div class="pt-3">
-								<h3>Ergonomic Chair</h3>
-								<p>Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio </p>
-								<p><a href="#">Read More</a></p>
-							</div>
-						</div>
-					</div>
-
-				</div>
-			</div>
-		</div>
-		<!-- End Popular Product -->
 
 
 

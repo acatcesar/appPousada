@@ -12,12 +12,13 @@ class CreateAccountForm(UserCreationForm):
 
     class Meta:
         model = Usuario
-        fields = ('username', 'email', 'password1', 'password2')
+        fields = ('username', 'email', 'password1', 'password2', 'cpf', 'endereco', 'celular')
 
 class ReservaFormCreate(ModelForm):
 
     dataEntrada = forms.DateField(widget=forms.DateInput(format='%d/%m/%Y'))
     dataSaida = forms.DateField(widget=forms.DateInput(format='%d/%m/%Y'))
+
 
     def __init__(self, user, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -26,3 +27,10 @@ class ReservaFormCreate(ModelForm):
     class Meta:
         model = Reserva
         fields = ['apartamento','dataEntrada','dataSaida', 'cupons', 'valor']
+
+class RelatorioReservasForm(forms.Form):
+    data_inicio = forms.DateField(label='Data de Início')
+    data_fim = forms.DateField(label='Data de Fim')
+
+class RelatorioUsuariosForm(forms.Form):
+    pass

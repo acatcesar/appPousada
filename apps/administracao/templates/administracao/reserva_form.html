@@ -8,7 +8,6 @@
 * Template URI: https://untree.co/
 * License: https://creativecommons.org/licenses/by/3.0/
 */ -->
-<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -17,12 +16,14 @@
   <link rel="shortcut icon" href="favicon.png">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Project</title>
+    <title>Plataforma Pousada Praia Campeche</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
@@ -31,9 +32,12 @@
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+  	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
 
   <!--
   <meta name="description" content="" />
@@ -44,7 +48,8 @@
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 		<link href="{% static 'css/tiny-slider.css' %}" rel="stylesheet">
 		<link href="{% static 'css/style.css' %}" rel="stylesheet">
-		<title>Furni Free Bootstrap 5 Template for Furniture and Interior Design Websites by Untree.co </title>
+	  <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/css/bootstrap.min.css" rel="stylesheet">
+
 	</head>
 
 	<body>
@@ -53,7 +58,9 @@
 		<nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="Furni navigation bar">
 
 			<div class="container">
-				<a class="navbar-brand" href="index.html">Pousada Campeche<span>.</span></a>
+      <a class="navbar-brand" href="{% url 'administracao:home' %}">
+        <img src="{% static 'images/logo.png' %}">
+      </a>
 
 				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni" aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
@@ -61,30 +68,19 @@
 
 				<div class="collapse navbar-collapse" id="navbarsFurni">
 					<ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
-						<li class="nav-item ">
-							<a class="nav-link" href="index.html">Home</a>
-						</li>
-						<li class="active"><a class="nav-link" href="shop.html">Reservas</a></li>
-						<li><a class="nav-link" href="about.html">Sobre nós</a></li>
-						<li><a class="nav-link" href="services.html">Services</a></li>
-						<li><a class="nav-link" href="blog.html">Blog</a></li>
-						<li><a class="nav-link" href="contact.html">Contact us</a></li>
+						<li class="active"><a class="nav-link" href="{% url 'administracao:home' %}">Reservas</a></li>
+
 					</ul>
 
 					<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
+   						{% if user.is_authenticated %}
+          				<li><a class="nav-link" href="{% url 'administracao:editaccount' user.pk %}"><img src="{% static 'images/user.svg' %}" style="width: 20px;"></a></li>
+						    {% endif %}
 
-						<li><a class="nav-link" href="administracao:editaccount"><img src="{% static 'images/user.svg' %}"></a></li>
-
-
-
-<form  method="post" action="{% url 'administracao:logout' %}" >
-    {% csrf_token %}
-    <button type="submit" class="bg-red-600 text-white py-1 px-3 rounded-md">
-        Sair
-    </button>
-</form>
-
-
+					<form  method="post" class="nav-link" action="{% url 'administracao:logout' %}" >
+						{% csrf_token %}
+						<button type="submit" class="btn-primary" >	Sair</button>
+					</form>
 
 					</ul>
 				</div>
@@ -92,27 +88,71 @@
 
 		</nav>
 
-		<!-- End Header/Navigation -->
 
-		<!-- Start Hero Section -->
-			<div class="hero">
-				<div class="container">
-					<div class="row justify-content-between">
-						<div class="col-lg-5">
-							<div class="intro-excerpt">
-								<h1>Reserva</h1>
+
+<!-- Start Hero Section -->
+<div class="hero">
+	<div class="container">
+		<div class="row justify-content-between align-items-center">
+			<div class="col-lg-5">
+				<div class="intro-excerpt">
+					<h1>Apartamentos Disponíveis</h1>
+				</div>
+			</div>
+			<div class="col-lg-7">
+				<!-- Seção do Carrossel de Imagens -->
+				<div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+					<div class="carousel-inner">
+						{% for apartamento in apartamentos %}
+						{% if forloop.counter0|divisibleby:4 %}
+						<div class="carousel-item {% if forloop.first %}active{% endif %}">
+							<div class="row">
+								{% endif %}
+								<div class="col-md-3">
+									<img src="{{ apartamento.foto.url }}" alt="{{ apartamento.nome }}" class="apartamento-image">
+									<p class="apartamento-nome">{{ apartamento.nome }}</p>
+									<p class="apartamento-valor">{{ apartamento.valor }}</p>
+								</div>
+								{% if forloop.counter|divisibleby:4 or forloop.last %}
 							</div>
 						</div>
-						<div class="col-lg-7">
-
-						</div>
+						{% endif %}
+						{% endfor %}
 					</div>
+					<button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+						<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+						<span class="visually-hidden">Previous</span>
+					</button>
+					<button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+						<span class="carousel-control-next-icon" aria-hidden="true"></span>
+						<span class="visually-hidden">Next</span>
+					</button>
 				</div>
-
+				<!-- Fim do Carrossel de Imagens -->
 			</div>
-		<!-- End Hero Section -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+		</div>
+	</div>
+</div>
+<!-- Fim da Seção Hero -->
+<br>
+<!-- Seção de Cartões de Apartamentos -->
+<div class="container">
+	<div class="row">
+		{% for apartamento in apartamentos %}
+		<div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+			<div class="card bg-primary text-white">
+				<img src="{{ apartamento.foto.url }}" alt="{{ apartamento.nome }}" class="card-img-top apartamento-image">
+				<div class="card-body text-center">
+					<h5 class="card-title">{{ apartamento.nome }}</h5>
+					<p class="card-text">Valor: R$ {{ apartamento.valor }}</p>
+				</div>
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+</div>
+<!-- Fim da Seção de Cartões de Apartamentos -->
+			</div>
 
 {% if messages %}
     {% for i in messages %}
@@ -124,120 +164,161 @@
 
 <form method="POST" class="custom-form">
 
-
     {% csrf_token %}
 
-    <label for="apartamento">Apartamento:</label>
-    {{ form.apartamento }}
-    <label for="valor">Valor Diária:</label>
-    {{ form.valor }}
+    <div class="form-group">
+        <label for="apartamento">Apartamento:</label>
+        {{ form.apartamento }}
+    </div>
 
-    <label for="dataEntrada">Data de entrada:</label>
-	<select id="dataEntrada" name="dataEntrada"></select>
+    <div class="form-group">
+        <label for="valor">Valor Diária:</label>
+        {{ form.valor }}
+    </div>
 
+    <div class="form-group">
+        <label for="dataEntrada">Data de entrada:</label>
+        <select id="dataEntrada" name="dataEntrada"></select>
+    </div>
 
-    <label for="dataSaida">Data de Saída:</label>
-    <select id="dataSaida" name="dataSaida">
-        <!-- Opções de data de saída serão preenchidas dinamicamente -->
-    </select>
+    <div class="form-group">
+        <label for="dataSaida">Data de Saída:</label>
+        <select id="dataSaida" name="dataSaida"></select>
+    </div>
 
-    <label for="codigo_cupom">Código do Cupom:</label>
-    <input type="text" id="codigo_cupom" name="codigo_cupom">
+    <div class="form-group">
+        <label for="codigo_cupom">Código do Cupom:</label>
+        <input type="text" id="codigo_cupom" name="codigo_cupom">
+    </div>
+
     <button type="submit" class="btn btn-info">Realizar Pagamento!</button>
+<!-- Adicione este botão no local desejado em seu HTML -->
+<!-- Adicione este botão no local desejado em seu HTML -->
 
 
 </form>
 
+<!-- Adicione este script na parte inferior do seu HTML, após incluir a biblioteca jQuery -->
 
 
-		<!-- Start Footer Section -->
+
+
+<style>
+    /* Estilos para ajustar o tamanho das imagens dos apartamentos */
+    .apartamento-image {
+    max-width: 250px; /* Define a largura máxima das imagens */
+    height: 50px; /* Define a altura desejada das imagens */
+    object-fit: cover; /* Garante que a imagem cubra todo o espaço disponível */
+    }
+
+    /* Estilos para exibir os itens da lista lado a lado */
+    .apartamentos-list {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .apartamento-item {
+        display: inline-block; /* Exibe os itens em linha */
+        margin-right: 10px; /* Espaçamento entre os itens */
+        vertical-align: top; /* Alinha os itens ao topo */
+    }
+
+    /* Estilos para o formulário */
+    .custom-form {
+        max-width: 600px; /* Defina uma largura máxima para o formulário */
+        margin: auto; /* Centralize o formulário na página */
+        padding: 20px; /* Adicione algum espaço ao redor do formulário */
+        border: 1px solid #ccc; /* Adicione uma borda ao formulário */
+        border-radius: 5px; /* Adicione bordas arredondadas ao formulário */
+    }
+
+    .form-group {
+        margin-bottom: 20px; /* Adicione espaço entre os grupos de campos */
+    }
+
+    label {
+        font-weight: bold; /* Faça os rótulos em negrito */
+    }
+
+    input[type="text"],
+    select {
+        width: 100%; /* Faça os campos de entrada se estenderem por toda a largura disponível */
+        padding: 10px; /* Adicione algum preenchimento interno aos campos */
+        margin-top: 5px; /* Adicione um pequeno espaço acima dos campos */
+        box-sizing: border-box; /* Inclua o preenchimento e a borda no tamanho total */
+        border-radius: 5px; /* Adicione bordas arredondadas aos campos */
+        border: 1px solid #ccc; /* Adicione uma borda aos campos */
+    }
+
+    button {
+        padding: 10px 20px; /* Adicione algum preenchimento ao botão */
+        border: none; /* Remova a borda do botão */
+        border-radius: 5px; /* Adicione bordas arredondadas ao botão */
+        background-color: #007bff; /* Defina a cor de fundo do botão */
+        color: #fff; /* Defina a cor do texto do botão */
+        cursor: pointer; /* Mude o cursor ao passar por cima do botão */
+    }
+
+    button:hover {
+        background-color: #0056b3; /* Altere a cor de fundo do botão ao passar o mouse sobre ele */
+    }
+</style>
+
+
 		<footer class="footer-section">
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-3">
+		<div class="card"><div class="card-body">
+      <h5>Previsão do Tempo para hoje em {{ weather_data.results.city_name }}</h5>
+      <p>Data: {{ weather_data.results.date }} | Hora: {{ weather_data.results.time }}</p>
+      <p>Temperatura: {{ weather_data.results.temp }}°C | Condição: {{ weather_data.results.description }}</p>
+      <p>Umidade: {{ weather_data.results.humidity }}</p>
+      <p>Vento: {{ weather_data.results.wind_speedy }}</p>
+      <img src="{{ condition_icon_url }}" alt="Ícone Condição Climática">
+	  <img src="{{ moon_phase_icon_url }}" alt="Ícone Fase da Lua">
+    </div>
+		</div>
+	</div>
+    <div class="col-md-9">
+      <h5>Previsão para os próximos dias:</h5>
+      <div class="row">
+        {% for forecast in weather_data.results.forecast|slice:":3" %}
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-body">
+              <h6>{{ forecast.date }} ({{ forecast.weekday }})</h6>
+              <p>Máx: {{ forecast.max }}°C | Mín: {{ forecast.min }}°C</p>
+              <p>Nuvens: {{ forecast.cloudiness }}% | Chuva: {{ forecast.rain }}mm</p>
+              <p>Prob. Chuva: {{ forecast.rain_probability }}% | Vento: {{ forecast.wind_speedy }}</p>
+              <p>Descrição: {{ forecast.description }}</p>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+			<br>
 			<div class="container relative">
-
-				<div class="sofa-img">
-					<img src="images/sofa.png" alt="Image" class="img-fluid">
-				</div>
-
-				<div class="row">
-					<div class="col-lg-8">
-						<div class="subscription-form">
-							<h3 class="d-flex align-items-center"><span class="me-1"><img src="images/envelope-outline.svg" alt="Image" class="img-fluid"></span><span>Subscribe to Newsletter</span></h3>
-
-							<form action="#" class="row g-3">
-								<div class="col-auto">
-									<input type="text" class="form-control" placeholder="Enter your name">
-								</div>
-								<div class="col-auto">
-									<input type="email" class="form-control" placeholder="Enter your email">
-								</div>
-								<div class="col-auto">
-									<button class="btn btn-primary">
-										<span class="fa fa-paper-plane"></span>
-									</button>
-								</div>
-							</form>
-
-						</div>
-					</div>
-				</div>
 
 				<div class="row g-5 mb-5">
 					<div class="col-lg-4">
-						<div class="mb-4 footer-logo-wrap"><a href="#" class="footer-logo">Furni<span>.</span></a></div>
-						<p class="mb-4">Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. Pellentesque habitant</p>
+						<div class="mb-4 footer-logo-wrap"><a href="#" class="footer-logo">Pousada Praia Campeche<span>.</span></a></div>
+					<p class="mb-4">Contatos: +55 48 3338 - 2026 / +55 48 3338 - 3471 </p>
+					<p class="mb-4">+55 48 9 9810 - 4098</p>
 
-						<ul class="list-unstyled custom-social">
-							<li><a href="#"><span class="fa fa-brands fa-facebook-f"></span></a></li>
-							<li><a href="#"><span class="fa fa-brands fa-twitter"></span></a></li>
-							<li><a href="#"><span class="fa fa-brands fa-instagram"></span></a></li>
-							<li><a href="#"><span class="fa fa-brands fa-linkedin"></span></a></li>
-						</ul>
-					</div>
 
-					<div class="col-lg-8">
-						<div class="row links-wrap">
-							<div class="col-6 col-sm-6 col-md-3">
-								<ul class="list-unstyled">
-									<li><a href="#">About us</a></li>
-									<li><a href="#">Services</a></li>
-									<li><a href="#">Blog</a></li>
-									<li><a href="#">Contact us</a></li>
-								</ul>
-							</div>
-
-							<div class="col-6 col-sm-6 col-md-3">
-								<ul class="list-unstyled">
-									<li><a href="#">Support</a></li>
-									<li><a href="#">Knowledge base</a></li>
-									<li><a href="#">Live chat</a></li>
-								</ul>
-							</div>
-
-							<div class="col-6 col-sm-6 col-md-3">
-								<ul class="list-unstyled">
-									<li><a href="#">Jobs</a></li>
-									<li><a href="#">Our team</a></li>
-									<li><a href="#">Leadership</a></li>
-									<li><a href="#">Privacy Policy</a></li>
-								</ul>
-							</div>
-
-							<div class="col-6 col-sm-6 col-md-3">
-								<ul class="list-unstyled">
-									<li><a href="#">Nordic Chair</a></li>
-									<li><a href="#">Kruzo Aero</a></li>
-									<li><a href="#">Ergonomic Chair</a></li>
-								</ul>
-							</div>
-						</div>
-					</div>
 
 				</div>
 
 				<div class="border-top copyright">
 					<div class="row pt-4">
 						<div class="col-lg-6">
-							<p class="mb-2 text-center text-lg-start">Copyright &copy;<script>document.write(new Date().getFullYear());</script>. All Rights Reserved. &mdash; Designed with love by <a href="https://untree.co">Untree.co</a>  Distributed By <a href="https://themewagon.com">ThemeWagon</a> <!-- License information: https://untree.co/license/ -->
+							<p class="mb-2 text-center text-lg-start">Copyright &copy;<script>document.write(new Date().getFullYear());</script>. All Rights Reserved. &mdash; Pousda Praia Campeche</a>
             </p>
 						</div>
 
@@ -294,3 +375,10 @@ $(document).ready(function () {
 </html>
 
 
+<style>
+  .apartamento-nome, .apartamento-valor {
+    font-size: 20px; /* Tamanho da fonte */
+    font-weight: bold; /* Negrito */
+    /* Outros estilos desejados */
+  }
+</style>

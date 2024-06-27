@@ -1,5 +1,4 @@
 from django.utils import timezone
-
 from django.test import TestCase
 from apps.administracao.models import Reserva, Usuario
 

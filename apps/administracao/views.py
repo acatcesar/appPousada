@@ -5,7 +5,7 @@ from .models import Reserva, Usuario,  Cupons
 from .models import Apartamento
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import FormMainPage, ReservaFormCreate, RelatorioReservasForm, RelatorioUsuariosForm
-from django.views.generic import TemplateView, ListView, DetailView, FormView, UpdateView, CreateView
+from django.views.generic import FormView, UpdateView, CreateView
 from .forms import CreateAccountForm
 from django.http import request, JsonResponse
 from django.utils import timezone
@@ -14,7 +14,6 @@ from django.contrib import messages
 from django.contrib.messages import constants
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.views import PasswordResetView
-from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes

@@ -1,6 +1,5 @@
 from django.urls import path, reverse_lazy
 
-from . import views
 from .views import MainPage, CreateAccount, Editaccount, HomehospedagemNovo, \
     obter_apartamento_valor, relatorio_reservas, relatorio_usuarios, CustomPasswordResetView
 from django.contrib.auth import views as auth_view

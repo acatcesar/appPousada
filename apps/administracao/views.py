@@ -1,5 +1,6 @@
 
 from django.contrib.auth.decorators import user_passes_test
+from django.db import transaction
 from django.shortcuts import render, redirect, reverse
 from .models import Reserva, Usuario,  Cupons
 from .models import Apartamento
@@ -92,7 +93,7 @@ class HomehospedagemNovo(LoginRequiredMixin, CreateView):
         reserva_obj = form.save(commit=False)
         reserva_obj.user = self.request.user
 
-        if reserva_obj.dataEntrada and reserva_obj.dataSaida:
+        if reserva_obj.dataEntrada and reserva_obj.dataSaida and reserva_obj.dataEntrada < reserva_obj.dataSaida:
             datas_entre = []
             current_date = reserva_obj.dataEntrada
             while current_date <= reserva_obj.dataSaida:
@@ -108,23 +109,29 @@ class HomehospedagemNovo(LoginRequiredMixin, CreateView):
                 messages.add_message(self.request,constants.ERROR, 'Esse intervalo de data não está disponível')
                 return redirect(reverse('administracao:create_reserva'))
 
-        reserva_obj.valor *= reserva_obj.qntDatas
+            reserva_obj.valor *= reserva_obj.qntDatas
 
-        codigo_cupom = self.request.POST.get('codigo_cupom')
-        if codigo_cupom:
-            try:
-                cupom = Cupons.objects.get(codigo=codigo_cupom, utilizado=False)
-                reserva_obj.valor -= cupom.desconto
-                cupom.utilizado = True
-                self.request.user.cupons_utilizados.add(cupom)
-                cupom.save()
-                reserva_obj.cupons = cupom
-            except Cupons.DoesNotExist:
-                pass
+            codigo_cupom = self.request.POST.get('codigo_cupom')
+            if codigo_cupom:
+                try:
+                    with transaction.atomic():
+                        cupom = Cupons.objects.select_for_update().get(codigo=codigo_cupom, utilizado=False)
+                        reserva_obj.valor -= cupom.desconto
+                        if reserva_obj.valor < 0:
+                            reserva_obj.valor = 0  # Garantindo que o valor não seja negativo
+                        cupom.utilizado = True
+                        self.request.user.cupons_utilizados.add(cupom)
+                        cupom.save()
+                        reserva_obj.cupons = cupom
+                except Cupons.DoesNotExist:
+                    pass
 
-        super().form_valid(form)
-        reserva_obj.save()
-        return super().form_valid(form)
+            super().form_valid(form)
+            reserva_obj.save()
+            return super().form_valid(form)
+        else:
+            messages.add_message(self.request, constants.ERROR, 'Esse intervalo de data  está invalido')
+            return redirect(reverse('administracao:create_reserva'))
 
 
 class CustomPasswordResetView(PasswordResetView):

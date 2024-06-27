@@ -14,6 +14,8 @@ class CreateAccountForm(UserCreationForm):
         model = Usuario
         fields = ('username', 'email', 'password1', 'password2', 'cpf', 'endereco', 'celular')
 
+
+
 class ReservaFormCreate(ModelForm):
 
     dataEntrada = forms.DateField(widget=forms.DateInput(format='%d/%m/%Y'))

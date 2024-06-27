@@ -26,9 +26,6 @@ class UsuarioAdmin(admin.ModelAdmin):
         }
 
 
-
-
-
 @admin.register(Apartamento)
 class ApartamentoAdmin(admin.ModelAdmin):
     list_display = ('nome', 'valor', 'status')

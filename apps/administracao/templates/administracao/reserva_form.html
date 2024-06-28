@@ -111,14 +111,13 @@
 								<div class="col-md-3">
 									<img src="{{ apartamento.foto.url }}" alt="{{ apartamento.nome }}" class="apartamento-image">
 									<p class="apartamento-nome">{{ apartamento.nome }}</p>
+									<p class="apartamento-valor">{{ apartamento.valor }}</p>
 								</div>
 								{% if forloop.counter|divisibleby:4 or forloop.last %}
 							</div>
 						</div>
 						{% endif %}
 						{% endfor %}
-															<p class="apartamento-valor">{{ apartamento.valor }}</p>
-
 					</div>
 					<button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
 						<span class="carousel-control-prev-icon" aria-hidden="true"></span>

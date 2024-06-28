@@ -29,6 +29,9 @@ class ReservaFormCreate(ModelForm):
     class Meta:
         model = Reserva
         fields = ['apartamento','dataEntrada','dataSaida', 'cupons', 'valor']
+        widgets = {
+            'valor': forms.TextInput(attrs={'readonly': 'readonly'})
+        }
 
 class RelatorioReservasForm(forms.Form):
     data_inicio = forms.DateField(label='Data de Início')

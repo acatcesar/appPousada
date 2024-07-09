@@ -75,7 +75,11 @@
 					<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
    						{% if user.is_authenticated %}
           				<li><a class="nav-link" href="{% url 'administracao:editaccount' user.pk %}"><img src="{% static 'images/user.svg' %}" style="width: 20px;"></a></li>
-						    {% endif %}
+						        {% if user.is_superuser %}
+									<li><a class="nav-link" href="{% url 'admin:index' %}">Admin</a></li>
+								{% endif %}
+
+						{% endif %}
 
 					<form  method="post" class="nav-link" action="{% url 'administracao:logout' %}" >
 						{% csrf_token %}
@@ -324,8 +328,7 @@
 
 						<div class="col-lg-6 text-center text-lg-end">
 							<ul class="list-unstyled d-inline-flex ms-auto">
-								<li class="me-4"><a href="#">Terms &amp; Conditions</a></li>
-								<li><a href="#">Privacy Policy</a></li>
+								<li><a href="https://drive.google.com/file/d/1Qhvbaa3ttG3orqceu2YgRiGesJLXLIIn/view?usp=sharing">Política de privacidade</a></li>
 							</ul>
 						</div>
 

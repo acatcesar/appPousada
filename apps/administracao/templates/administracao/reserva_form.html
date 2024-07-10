@@ -70,7 +70,7 @@
 					<ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
 						<li class="active"><a class="nav-link" href="{% url 'administracao:home' %}">Reservas</a></li>
 
-					</ul>
+
 
 					<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
    						{% if user.is_authenticated %}
@@ -85,7 +85,7 @@
 						{% csrf_token %}
 						<button type="submit" class="btn-primary" >	Sair</button>
 					</form>
-
+					</ul>
 					</ul>
 				</div>
 			</div>
